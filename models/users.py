@@ -1,8 +1,7 @@
-from sqlalchemy import ForeignKey, String, DateTime
+from sqlalchemy import ForeignKey, String, Date
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from ..database.db import Base
-from uuid import uuid4
-from datetime import datetime, timezone
+from database.db import Base
+from datetime import date
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -11,8 +10,8 @@ if TYPE_CHECKING:
 class User(Base):
     __tablename__ = 'users'
     
-    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     login: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-    registation_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    registration_date: Mapped[date] = mapped_column(Date, nullable=False)
     
     credits: Mapped[list["Credit"]] = relationship("Credit", back_populates="user", cascade="all, delete-orphan")

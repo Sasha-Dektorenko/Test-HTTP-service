@@ -1,13 +1,21 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from .db import get_session
 from fastapi import Depends
+from repositories.users import UserRepository
+from repositories.credits import CreditRepository
+from repositories.plans import PlansRepository
+from repositories.payments import PaymentsRepository
 
 class Uow:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
+        self.user_repo = UserRepository(db_session)
+        self.credit_repo = CreditRepository(db_session)
+        self.plan_repo = PlansRepository(db_session)
+        self.payment_repo = PaymentsRepository(db_session)
         
     async def __aenter__(self):
-        return self.db_session
+        return self
     
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
